@@ -1,9 +1,13 @@
 {{page-title "Index"}}
 Clock:
-{{@model.time}}
+<b>
+    {{@model.time}}
+</b>
 
+<!--
 <br>
 <button {{on "click" this.updateTime}}>Update time</button>
+-->
 <br>
 <button {{on "click" this.startPolling}}>Start auto update time</button>
 
@@ -13,5 +17,4 @@ Clock:
 <br>
 <br>
 
-ID is:
-{{this.id}}
+ID is: {{this.id}}

@@ -36,28 +36,36 @@ export default class IndexController extends Controller {
   @action
   updateTimestamp(event) {
     event.preventDefault();
-    console.log('test123');
-    console.log(this.updateId);
     fetch(`/clock/update/${this.updateId}`, { method: 'POST' });
-
-    // this.ajax.post(`/clock/update/${this.updateId}`);
   }
 
   @action
   startPolling(event) {
     console.log('start auto updating timestamp');
     this.poll.addPoll({
-      interval: 500,
+      interval: 1000,
       callback: () => {
-        fetch(`/clock/${window.identifier}`)
+        fetch(`/push-update/${window.identifier}`, {
+          headers: { 'MU-TAB-ID': window.identifier },
+        })
           .then((response) => response.json())
-          .then((data) => {
-            this.store
-              .findRecord('timestamp', window.identifier)
-              .then(function (timestamp) {
-                timestamp.time = data.time;
-                timestamp.save();
-              });
+          .then((resp) => {
+            let type = resp.type;
+            if (type) {
+              console.log(`Received push update : ${JSON.stringify(resp)}`);
+              let data = resp.data;
+              // Push-update for type clock means the timestamp has to update
+              if (type.value === 'http://clock') {
+                if (data) {
+                  this.store
+                    .findRecord('timestamp', window.identifier)
+                    .then(function (timestamp) {
+                      timestamp.time = data.time;
+                      timestamp.save();
+                    });
+                }
+              }
+            }
           })
           .catch((err) => {
             console.error(err);

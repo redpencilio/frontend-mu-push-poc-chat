@@ -10,15 +10,14 @@ export default class IndexRoute extends Route {
 
     let ts = this.store.createRecord('timestamp', {
       id: window.identifier,
-      time: new Date().toString(),
+      time: 'refresh to fetch a time from the server',
     });
     ts.save();
   }
 
-    async id(){
-        console.log(window.identifier)
-        return window.identifier
-    }
+  async id() {
+    return window.identifier;
+  }
 
   async model() {
     return this.store.findRecord('timestamp', window.identifier);
