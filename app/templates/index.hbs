@@ -1,13 +1,13 @@
 {{page-title "Index"}}
+Your id is: {{this.id}}
+<br>
+
 Clock:
 <b>
-    {{@model.time}}
+    {{this.clock.time}}
 </b>
-
-<!--
 <br>
-<button {{on "click" this.updateTime}}>Update time</button>
--->
+
 <br>
 <button {{on "click" this.startPolling}}>Start auto update time</button>
 
@@ -17,4 +17,24 @@ Clock:
 <br>
 <br>
 
-ID is: {{this.id}}
+<b>
+    Chat:
+</b>
+<br>
+{{#each this.chat as |message|}}
+    <b>Message</b>:
+    {{message.text}}
+    <br>
+    from: {{message.from}} <br>
+    to: {{message.to}} <br>
+    at {{message.time}}
+    <br>
+    <br>
+{{/each}}
+
+<b> Send new message </b>
+<br>
+<Input @value={{this.messageTo}} @placeholder="id to send message to" />
+<Input @value={{this.message}} @placeholder="message to send" />
+<button {{on "click" this.sendMessage}}>Send message</button>
+

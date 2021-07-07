@@ -10,6 +10,15 @@ export default class IndexController extends Controller {
   // @service ajax;
   ajax = Ember.inject.service();
   id = window.identifier;
+  chat = this.store.findAll('message');
+
+  // get chat() {
+  //   return this.store.findAll('message');
+  // }
+
+  get clock() {
+    return this.store.findRecord('timestamp', window.identifier);
+  }
 
   changeTime() {
     fetch(`/clock/${window.identifier}`)
@@ -28,9 +37,13 @@ export default class IndexController extends Controller {
   }
 
   @action
-  updateTime(event) {
+  sendMessage(event) {
     event.preventDefault();
-    this.changeTime();
+    let message = this.store.createRecord('message', {
+      text: this.message,
+      to: this.messageTo,
+    });
+    message.save();
   }
 
   @action
@@ -43,9 +56,9 @@ export default class IndexController extends Controller {
   startPolling(event) {
     console.log('start auto updating timestamp');
     this.poll.addPoll({
-      interval: 1000,
+      interval: 5000,
       callback: () => {
-        fetch(`/push-update/${window.identifier}`, {
+        fetch(`/push-update/`, {
           headers: { 'MU-TAB-ID': window.identifier },
         })
           .then((response) => response.json())
@@ -64,6 +77,10 @@ export default class IndexController extends Controller {
                       timestamp.save();
                     });
                 }
+              } else if (type.value === 'http://chat') {
+                if (data.refresh) {
+                  this.set('chat', this.store.findAll('message'));
+                }
               }
             }
           })
@@ -73,11 +90,5 @@ export default class IndexController extends Controller {
       },
       label: 'time-polling',
     });
-  }
-
-  @action
-  stopPolling(event) {
-    console.log('stop auto updating timestamp');
-    this.poll.stopPollByLabel('time-polling');
   }
 }

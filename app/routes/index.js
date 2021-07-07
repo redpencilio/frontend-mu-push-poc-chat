@@ -13,13 +13,14 @@ export default class IndexRoute extends Route {
       time: 'refresh to fetch a time from the server',
     });
     ts.save();
+    let message = this.store.createRecord('message', {
+      text: 'Message content test',
+      to: window.identifier,
+    });
+    message.save();
   }
 
   async id() {
     return window.identifier;
-  }
-
-  async model() {
-    return this.store.findRecord('timestamp', window.identifier);
   }
 }
