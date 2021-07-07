@@ -12,10 +12,6 @@ export default class IndexController extends Controller {
   id = window.identifier;
   chat = this.store.findAll('message');
 
-  // get chat() {
-  //   return this.store.findAll('message');
-  // }
-
   get clock() {
     return this.store.findRecord('timestamp', window.identifier);
   }
@@ -54,7 +50,7 @@ export default class IndexController extends Controller {
 
   @action
   startPolling(event) {
-    console.log('start auto updating timestamp');
+    // console.log('start auto updating');
     this.poll.addPoll({
       interval: 5000,
       callback: () => {
@@ -65,7 +61,7 @@ export default class IndexController extends Controller {
           .then((resp) => {
             let type = resp.type;
             if (type) {
-              console.log(`Received push update : ${JSON.stringify(resp)}`);
+              // console.log(`Received push update : ${JSON.stringify(resp)}`);
               let data = resp.data;
               // Push-update for type clock means the timestamp has to update
               if (type.value === 'http://clock') {

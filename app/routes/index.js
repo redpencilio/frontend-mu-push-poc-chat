@@ -4,6 +4,7 @@ import { action } from '@ember/object';
 
 export default class IndexRoute extends Route {
   @service store;
+  @service poll;
 
   constructor() {
     super(...arguments);
@@ -13,11 +14,11 @@ export default class IndexRoute extends Route {
       time: 'refresh to fetch a time from the server',
     });
     ts.save();
-    let message = this.store.createRecord('message', {
-      text: 'Message content test',
-      to: window.identifier,
-    });
-    message.save();
+    // let message = this.store.createRecord('message', {
+    //   text: 'Message content test',
+    //   to: window.identifier,
+    // });
+    // message.save();
   }
 
   async id() {
