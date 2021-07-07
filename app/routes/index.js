@@ -11,7 +11,7 @@ export default class IndexRoute extends Route {
 
     let ts = this.store.createRecord('timestamp', {
       id: window.identifier,
-      time: 'refresh to fetch a time from the server',
+      time: 'Click the update button to update the time',
     });
     ts.save();
     // let message = this.store.createRecord('message', {
