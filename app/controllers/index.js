@@ -61,7 +61,7 @@ export default class IndexController extends Controller {
   startPolling() {
     // console.log('start auto updating');
     this.poll.addPoll({
-      interval: 5000,
+      interval: 2000,
       callback: () => {
         fetch(`/push-update/`, {
           headers: { 'MU-TAB-ID': window.identifier },
