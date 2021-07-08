@@ -12,6 +12,7 @@ export default class IndexController extends Controller {
   id = window.identifier;
   chat = this.store.findAll('message');
   isPolling = false;
+  isFetching = false;
 
   get clock() {
     return this.store.findRecord('timestamp', window.identifier);
@@ -64,37 +65,42 @@ export default class IndexController extends Controller {
     if (!this.isPolling) {
       this.isPolling = true;
       this.poll.addPoll({
-        interval: 1000,
+        interval: 100,
         callback: () => {
-          fetch(`/push-update/`, {
-            headers: { 'MU-TAB-ID': window.identifier },
-          })
-            .then((response) => response.json())
-            .then((resp) => {
-              let type = resp.type;
-              if (type) {
-                // console.log(`Received push update : ${JSON.stringify(resp)}`);
-                let data = resp.data;
-                // Push-update for type clock means the timestamp has to update
-                if (type.value === 'http://clock') {
-                  if (data) {
-                    this.store
-                      .findRecord('timestamp', window.identifier)
-                      .then(function (timestamp) {
-                        timestamp.time = data.time;
-                        timestamp.save();
-                      });
-                  }
-                } else if (type.value === 'http://chat') {
-                  if (data.refresh) {
-                    this.set('chat', this.store.findAll('message'));
+          if (!this.isFetching) {
+            this.isFetching = true;
+            fetch(`/push-update/`, {
+              headers: { 'MU-TAB-ID': window.identifier },
+            })
+              .then((response) => response.json())
+              .then((resp) => {
+                let type = resp.type;
+                if (type) {
+                  // console.log(`Received push update : ${JSON.stringify(resp)}`);
+                  let data = resp.data;
+                  // Push-update for type clock means the timestamp has to update
+                  if (type.value === 'http://clock') {
+                    if (data) {
+                      this.store
+                        .findRecord('timestamp', window.identifier)
+                        .then(function (timestamp) {
+                          timestamp.time = data.time;
+                          timestamp.save();
+                        });
+                    }
+                  } else if (type.value === 'http://chat') {
+                    if (data.refresh) {
+                      this.set('chat', this.store.findAll('message'));
+                    }
                   }
                 }
-              }
-            })
-            .catch((err) => {
-              console.error(err);
-            });
+                this.isFetching = false;
+              })
+              .catch((err) => {
+                this.isFetching = false;
+                console.error(err);
+              });
+          }
         },
         label: 'time-polling',
       });
