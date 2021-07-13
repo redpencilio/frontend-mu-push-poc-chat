@@ -75,12 +75,14 @@ export default class IndexController extends Controller {
               .then((response) => response.json())
               .then((resp) => {
                 let type = resp.type;
+                let realm = resp.realm;
                 if (type) {
-                  // console.log(`Received push update : ${JSON.stringify(resp)}`);
+                  console.log(`Received push update : ${JSON.stringify(resp)}`);
+                  console.log(new Date());
                   let data = resp.data;
                   // Push-update for type clock means the timestamp has to update
-                  if (type.value === 'http://clock') {
-                    if (data) {
+                  if (realm.value === 'http://clock') {
+                    if (type.value == 'http://update') {
                       this.store
                         .findRecord('timestamp', window.identifier)
                         .then(function (timestamp) {
@@ -88,8 +90,8 @@ export default class IndexController extends Controller {
                           timestamp.save();
                         });
                     }
-                  } else if (type.value === 'http://chat') {
-                    if (data.refresh) {
+                  } else if (realm.value === 'http://chat') {
+                    if (type.value == 'http://refresh') {
                       this.set('chat', this.store.findAll('message'));
                     }
                   }
@@ -98,7 +100,7 @@ export default class IndexController extends Controller {
               })
               .catch((err) => {
                 this.isFetching = false;
-                console.error(err);
+                console.log(`An error occured: ${err}`);
               });
           }
         },
