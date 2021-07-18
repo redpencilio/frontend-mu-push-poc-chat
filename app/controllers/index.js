@@ -14,6 +14,11 @@ export default class IndexController extends Controller {
   isPolling = false;
   isFetching = false;
 
+  constructor() {
+    super(...arguments);
+    this.startPolling();
+  }
+
   get clock() {
     return this.store.findRecord('timestamp', window.identifier);
   }
@@ -42,21 +47,18 @@ export default class IndexController extends Controller {
       to: this.messageTo,
     });
     message.save();
-    this.startPolling();
   }
 
   @action
   updateLocalTimestamp(event) {
     event.preventDefault();
     fetch(`/clock/update/${window.identifier}`, { method: 'POST' });
-    this.startPolling();
   }
 
   @action
   updateTimestamp(event) {
     event.preventDefault();
     fetch(`/clock/update/${this.updateId}`, { method: 'POST' });
-    this.startPolling();
   }
 
   @action
