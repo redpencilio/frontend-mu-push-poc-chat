@@ -10,7 +10,7 @@ export default class IndexRoute extends Route {
     super(...arguments);
 
     let ts = this.store.createRecord('timestamp', {
-      id: window.identifier,
+      id: 'local',
       time: 'Click the update button to update the time',
     });
     ts.save();
