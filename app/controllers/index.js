@@ -2,13 +2,9 @@ import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 
-import Ember from 'ember';
-
 export default class IndexController extends Controller {
   @service store;
   @service poll;
-  // @service ajax;
-  ajax = Ember.inject.service();
   id = window.identifier;
   chat = this.store.findAll('message');
   isPolling = false;
@@ -63,7 +59,6 @@ export default class IndexController extends Controller {
 
   @action
   startPolling() {
-    // console.log('start auto updating');
     if (!this.isPolling) {
       this.isPolling = true;
       this.poll.addPoll({
@@ -106,7 +101,6 @@ export default class IndexController extends Controller {
               });
           }
         },
-        label: 'time-polling',
       });
     }
   }
