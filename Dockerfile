@@ -1,3 +1,7 @@
-FROM danlynn/ember-cli:3.26.1
+FROM madnificent/ember:3.26.1
 LABEL maintainer="jan-pieter.baert@hotmail.com"
-ADD . /myapp
+ADD . /app
+
+RUN "yarn install"
+
+CMD ["ember", "server"]
