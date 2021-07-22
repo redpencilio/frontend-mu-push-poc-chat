@@ -1,0 +1,81 @@
+---
+kind: pipeline
+type: docker
+name: verify-pr
+steps:
+- name: build-dry-run
+  image: plugins/docker
+  settings:
+    repo: redpencil/frontend-mu-push-poc-chat
+    dry_run: true
+    purge: true
+trigger:
+  event:
+    - pull
+---
+kind: pipeline
+type: docker
+name: push-latest-build-on-commit-to-master
+steps:
+- name: push-latest-build
+  image: plugins/docker
+  settings:
+    repo: redpencil/frontendymu-push-poc-chat
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+trigger:
+  branch:
+    - master
+  event:
+    exclude:
+    - pull_request
+---
+kind: pipeline
+type: docker
+name: push-feature-build-for-feature-branch
+steps:
+- name: push-feature-build
+  image: plugins/docker
+  settings:
+    repo: redpencil/frontendymu-push-poc-chat
+    tags: feature-${DRONE_BRANCH##feature/}
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+trigger:
+  branch:
+  - feature/*
+  event:
+    exclude:
+    - pull_request
+---
+kind: pipeline
+type: docker
+name: release-on-tag
+steps:
+- name: build-dry-run
+  image: plugins/docker
+  settings:
+    repo: redpencil/frontendymu-push-poc-chat
+    dry_run: true
+- name: push-tagged-build
+  image: plugins/docker
+  settings:
+    repo: redpencil/frontendymu-push-poc-chat
+    tags: ${DRONE_TAG##v}
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    purge: true
+trigger:
+  event:
+    - tag
+---
+kind: signature
+hmac: 26e5ca7a294d436359cfed148a9ddc4f4d1f3fc7d123af4584c3f501dafdc4fc
+
+...
