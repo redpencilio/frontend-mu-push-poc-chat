@@ -20,7 +20,7 @@ steps:
 - name: push-latest-build
   image: plugins/docker
   settings:
-    repo: redpencil/frontendymu-push-poc-chat
+    repo: redpencil/frontend-mu-push-poc-chat
     username:
       from_secret: docker_username
     password:
@@ -39,7 +39,7 @@ steps:
 - name: push-feature-build
   image: plugins/docker
   settings:
-    repo: redpencil/frontendymu-push-poc-chat
+    repo: redpencil/frontend-mu-push-poc-chat
     tags: feature-${DRONE_BRANCH##feature/}
     username:
       from_secret: docker_username
@@ -59,12 +59,12 @@ steps:
 - name: build-dry-run
   image: plugins/docker
   settings:
-    repo: redpencil/frontendymu-push-poc-chat
+    repo: redpencil/frontend-mu-push-poc-chat
     dry_run: true
 - name: push-tagged-build
   image: plugins/docker
   settings:
-    repo: redpencil/frontendymu-push-poc-chat
+    repo: redpencil/frontend-mu-push-poc-chat
     tags: ${DRONE_TAG##v}
     username:
       from_secret: docker_username
@@ -76,6 +76,6 @@ trigger:
     - tag
 ---
 kind: signature
-hmac: 26e5ca7a294d436359cfed148a9ddc4f4d1f3fc7d123af4584c3f501dafdc4fc
+hmac: a4a8ba3345448c885c8ec8ff7a846b0b2a7173f5579d2dc39d2024d7f48b74f2
 
 ...
